@@ -17,6 +17,7 @@ void Gamepad::setup()
 	// Configure pin mapping
 	f2Mask = (GAMEPAD_MASK_A1 | GAMEPAD_MASK_S2);
 	BoardOptions boardOptions = getBoardOptions();
+	// configure left analog stick for personal usage
 	hasLeftAnalogStick = true;
 	if (!boardOptions.hasBoardOptions)
 	{
