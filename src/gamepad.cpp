@@ -23,6 +23,10 @@ void Gamepad::setup()
 		boardOptions.pinDpadDown  = PIN_DPAD_DOWN;
 		boardOptions.pinDpadLeft  = PIN_DPAD_LEFT;
 		boardOptions.pinDpadRight = PIN_DPAD_RIGHT;
+		boardOptions.pinLeftStickUp    = PIN_LEFT_STICK_UP;
+		boardOptions.pinLeftStickDown  = PIN_LEFT_STICK_DOWN;
+		boardOptions.pinLeftStickLeft  = PIN_LEFT_STICK_LEFT;
+		boardOptions.pinLeftStickRight = PIN_LEFT_STICK_RIGHT;
 		boardOptions.pinButtonB1  = PIN_BUTTON_B1;
 		boardOptions.pinButtonB2  = PIN_BUTTON_B2;
 		boardOptions.pinButtonB3  = PIN_BUTTON_B3;
@@ -58,6 +62,10 @@ void Gamepad::setup()
 	mapDpadDown  = new GamepadButtonMapping(boardOptions.pinDpadDown,  GAMEPAD_MASK_DOWN);
 	mapDpadLeft  = new GamepadButtonMapping(boardOptions.pinDpadLeft,  GAMEPAD_MASK_LEFT);
 	mapDpadRight = new GamepadButtonMapping(boardOptions.pinDpadRight, GAMEPAD_MASK_RIGHT);
+	mapLeftStickUp    = new GamepadButtonMapping(boardOptions.pinLeftStickUp,    GAMEPAD_MASK_LS_U);
+	mapLeftStickDown  = new GamepadButtonMapping(boardOptions.pinLeftStickDown,  GAMEPAD_MASK_LS_D);
+	mapLeftStickLeft  = new GamepadButtonMapping(boardOptions.pinLeftStickLeft,  GAMEPAD_MASK_LS_L);
+	mapLeftStickRight = new GamepadButtonMapping(boardOptions.pinLeftStickRight, GAMEPAD_MASK_LS_R);
 	mapButtonB1  = new GamepadButtonMapping(boardOptions.pinButtonB1,  GAMEPAD_MASK_B1);
 	mapButtonB2  = new GamepadButtonMapping(boardOptions.pinButtonB2,  GAMEPAD_MASK_B2);
 	mapButtonB3  = new GamepadButtonMapping(boardOptions.pinButtonB3,  GAMEPAD_MASK_B3);
@@ -73,13 +81,14 @@ void Gamepad::setup()
 	mapButtonA1  = new GamepadButtonMapping(boardOptions.pinButtonA1,  GAMEPAD_MASK_A1);
 	mapButtonA2  = new GamepadButtonMapping(boardOptions.pinButtonA2,  GAMEPAD_MASK_A2);
 
-	gamepadMappings = new GamepadButtonMapping *[GAMEPAD_DIGITAL_INPUT_COUNT]
+	gamepadMappings = new GamepadButtonMapping *[GAMEPAD_DIGITAL_INPUT_COUNT+4]
 	{
 		mapDpadUp,   mapDpadDown, mapDpadLeft, mapDpadRight,
 		mapButtonB1, mapButtonB2, mapButtonB3, mapButtonB4,
 		mapButtonL1, mapButtonR1, mapButtonL2, mapButtonR2,
 		mapButtonS1, mapButtonS2, mapButtonL3, mapButtonR3,
-		mapButtonA1, mapButtonA2
+		mapButtonA1, mapButtonA2, mapLeftStickUp, mapLeftStickDown,
+		mapLeftStickLeft, mapLeftStickRight
 	};
 
 	for (int i = 0; i < GAMEPAD_DIGITAL_INPUT_COUNT; i++)
@@ -131,8 +140,36 @@ void Gamepad::read()
 		| ((values & mapButtonA2->pinMask)  ? mapButtonA2->buttonMask  : 0)
 	;
 
-	state.lx = GAMEPAD_JOYSTICK_MID;
-	state.ly = GAMEPAD_JOYSTICK_MID;
+	if ( (values & mapLeftStickLeft->pinMask) ){
+		// left
+			state.lx = GAMEPAD_JOYSTICK_MIN;
+
+	}
+	else if ((values & mapLeftStickRight->pinMask)){
+		// right
+		state.lx = GAMEPAD_JOYSTICK_MAX;
+
+	}
+	else {
+		// neutral
+		state.lx = GAMEPAD_JOYSTICK_MID;
+	}
+	if ( (values & mapLeftStickUp->pinMask) ){
+		// left
+			state.ly = GAMEPAD_JOYSTICK_MIN;
+
+	}
+	else if ((values & mapLeftStickDown->pinMask)){
+		// right
+		state.ly = GAMEPAD_JOYSTICK_MAX;
+
+	}
+	else {
+		// neutral
+		state.ly = GAMEPAD_JOYSTICK_MID;
+	}
+	// state.lx = GAMEPAD_JOYSTICK_MID;
+	// state.ly = GAMEPAD_JOYSTICK_MID;
 	state.rx = GAMEPAD_JOYSTICK_MID;
 	state.ry = GAMEPAD_JOYSTICK_MID;
 	state.lt = 0;

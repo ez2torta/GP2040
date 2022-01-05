@@ -54,6 +54,10 @@ public:
 	GamepadButtonMapping *mapDpadDown;
 	GamepadButtonMapping *mapDpadLeft;
 	GamepadButtonMapping *mapDpadRight;
+	GamepadButtonMapping *mapLeftStickUp;
+	GamepadButtonMapping *mapLeftStickDown;
+	GamepadButtonMapping *mapLeftStickLeft;
+	GamepadButtonMapping *mapLeftStickRight;
 	GamepadButtonMapping *mapButtonB1;
 	GamepadButtonMapping *mapButtonB2;
 	GamepadButtonMapping *mapButtonB3;

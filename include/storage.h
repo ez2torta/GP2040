@@ -22,6 +22,10 @@ struct BoardOptions
 	uint8_t pinDpadDown;
 	uint8_t pinDpadLeft;
 	uint8_t pinDpadRight;
+	uint8_t pinLeftStickUp;
+	uint8_t pinLeftStickDown;
+	uint8_t pinLeftStickLeft;
+	uint8_t pinLeftStickRight;
 	uint8_t pinButtonB1;
 	uint8_t pinButtonB2;
 	uint8_t pinButtonB3;
