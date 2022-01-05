@@ -17,6 +17,7 @@ void Gamepad::setup()
 	// Configure pin mapping
 	f2Mask = (GAMEPAD_MASK_A1 | GAMEPAD_MASK_S2);
 	BoardOptions boardOptions = getBoardOptions();
+	hasLeftAnalogStick = true;
 	if (!boardOptions.hasBoardOptions)
 	{
 		boardOptions.pinDpadUp    = PIN_DPAD_UP;
@@ -62,10 +63,10 @@ void Gamepad::setup()
 	mapDpadDown  = new GamepadButtonMapping(boardOptions.pinDpadDown,  GAMEPAD_MASK_DOWN);
 	mapDpadLeft  = new GamepadButtonMapping(boardOptions.pinDpadLeft,  GAMEPAD_MASK_LEFT);
 	mapDpadRight = new GamepadButtonMapping(boardOptions.pinDpadRight, GAMEPAD_MASK_RIGHT);
-	mapLeftStickUp    = new GamepadButtonMapping(boardOptions.pinLeftStickUp,    GAMEPAD_MASK_LS_U);
-	mapLeftStickDown  = new GamepadButtonMapping(boardOptions.pinLeftStickDown,  GAMEPAD_MASK_LS_D);
-	mapLeftStickLeft  = new GamepadButtonMapping(boardOptions.pinLeftStickLeft,  GAMEPAD_MASK_LS_L);
-	mapLeftStickRight = new GamepadButtonMapping(boardOptions.pinLeftStickRight, GAMEPAD_MASK_LS_R);
+	mapLeftStickUp    = new GamepadButtonMapping(boardOptions.pinLeftStickUp,    GAMEPAD_MASK_DU);
+	mapLeftStickDown  = new GamepadButtonMapping(boardOptions.pinLeftStickDown,  GAMEPAD_MASK_DD);
+	mapLeftStickLeft  = new GamepadButtonMapping(boardOptions.pinLeftStickLeft,  GAMEPAD_MASK_DL);
+	mapLeftStickRight = new GamepadButtonMapping(boardOptions.pinLeftStickRight, GAMEPAD_MASK_DR);
 	mapButtonB1  = new GamepadButtonMapping(boardOptions.pinButtonB1,  GAMEPAD_MASK_B1);
 	mapButtonB2  = new GamepadButtonMapping(boardOptions.pinButtonB2,  GAMEPAD_MASK_B2);
 	mapButtonB3  = new GamepadButtonMapping(boardOptions.pinButtonB3,  GAMEPAD_MASK_B3);
@@ -140,38 +141,10 @@ void Gamepad::read()
 		| ((values & mapButtonA2->pinMask)  ? mapButtonA2->buttonMask  : 0)
 	;
 
-	if ( (values & mapLeftStickLeft->pinMask) ){
-		// left
-			state.lx = GAMEPAD_JOYSTICK_MIN;
-
-	}
-	else if ((values & mapLeftStickRight->pinMask)){
-		// right
-		state.lx = GAMEPAD_JOYSTICK_MAX;
-
-	}
-	else {
-		// neutral
-		state.lx = GAMEPAD_JOYSTICK_MID;
-	}
-	if ( (values & mapLeftStickUp->pinMask) ){
-		// left
-			state.ly = GAMEPAD_JOYSTICK_MIN;
-
-	}
-	else if ((values & mapLeftStickDown->pinMask)){
-		// right
-		state.ly = GAMEPAD_JOYSTICK_MAX;
-
-	}
-	else {
-		// neutral
-		state.ly = GAMEPAD_JOYSTICK_MID;
-	}
-	// state.lx = GAMEPAD_JOYSTICK_MID;
-	// state.ly = GAMEPAD_JOYSTICK_MID;
+	state.lx = GAMEPAD_JOYSTICK_MAX;
+	state.ly = GAMEPAD_JOYSTICK_MIN;
 	state.rx = GAMEPAD_JOYSTICK_MID;
 	state.ry = GAMEPAD_JOYSTICK_MID;
-	state.lt = 0;
-	state.rt = 0;
+	state.lt = GAMEPAD_JOYSTICK_MID;
+	state.rt = GAMEPAD_JOYSTICK_MID;
 }
