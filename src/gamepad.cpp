@@ -142,8 +142,11 @@ void Gamepad::read()
 		| ((values & mapButtonA2->pinMask)  ? mapButtonA2->buttonMask  : 0)
 	;
 
-	state.lx = (values & mapLeftStickRight->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapLeftStickLeft->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
-	state.ly = (values & mapLeftStickDown->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapLeftStickUp->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
+	// ugly SOCD left analog stick cleaner
+	// dpad should have priority here so.. if we get a right input on dpad (buttons) we have to cancel the left input
+	// the same for dpad up => left analog stick down must not register
+	state.lx = (values & mapLeftStickRight->pinMask) && !(values & mapDpadLeft->pinMask)  ? GAMEPAD_JOYSTICK_MAX : (values & mapLeftStickLeft->pinMask) && !(values & mapDpadRight->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
+	state.ly = (values & mapLeftStickDown->pinMask) && !(values & mapDpadUp->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapLeftStickUp->pinMask) && !(values & mapDpadDown->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
 	state.rx = GAMEPAD_JOYSTICK_MID;
 	state.ry = GAMEPAD_JOYSTICK_MID;
 	state.lt = GAMEPAD_JOYSTICK_MID;
