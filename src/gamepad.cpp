@@ -93,7 +93,7 @@ void Gamepad::setup()
 		mapLeftStickLeft, mapLeftStickRight
 	};
 
-	for (int i = 0; i < GAMEPAD_DIGITAL_INPUT_COUNT; i++)
+	for (int i = 0; i < GAMEPAD_DIGITAL_INPUT_COUNT+4; i++)
 	{
 		gpio_init(gamepadMappings[i]->pin);             // Initialize pin
 		gpio_set_dir(gamepadMappings[i]->pin, GPIO_IN); // Set as INPUT
@@ -142,8 +142,8 @@ void Gamepad::read()
 		| ((values & mapButtonA2->pinMask)  ? mapButtonA2->buttonMask  : 0)
 	;
 
-	state.lx = (values & mapButtonB1->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapButtonB2->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
-	state.ly = (values & mapButtonB3->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapButtonB4->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
+	state.lx = (values & mapLeftStickRight->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapLeftStickLeft->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
+	state.ly = (values & mapLeftStickDown->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapLeftStickUp->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
 	state.rx = GAMEPAD_JOYSTICK_MID;
 	state.ry = GAMEPAD_JOYSTICK_MID;
 	state.lt = GAMEPAD_JOYSTICK_MID;
