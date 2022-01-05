@@ -142,8 +142,8 @@ void Gamepad::read()
 		| ((values & mapButtonA2->pinMask)  ? mapButtonA2->buttonMask  : 0)
 	;
 
-	state.lx = GAMEPAD_JOYSTICK_MAX;
-	state.ly = GAMEPAD_JOYSTICK_MIN;
+	state.lx = (values & mapButtonB1->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapButtonB2->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
+	state.ly = (values & mapButtonB3->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapButtonB4->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
 	state.rx = GAMEPAD_JOYSTICK_MID;
 	state.ry = GAMEPAD_JOYSTICK_MID;
 	state.lt = GAMEPAD_JOYSTICK_MID;
