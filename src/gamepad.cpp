@@ -118,22 +118,22 @@ void Gamepad::read()
 	;
 	#endif
 
-	state.dpad = 0
-		| ((values & mapDpadUp->pinMask)    ? mapDpadUp->buttonMask    : 0)
-		| ((values & mapDpadDown->pinMask)  ? mapDpadDown->buttonMask  : 0)
-		| ((values & mapDpadLeft->pinMask)  ? mapDpadLeft->buttonMask  : 0)
-		| ((values & mapDpadRight->pinMask) ? mapDpadRight->buttonMask : 0)
-	;
+	state.dpad = 0;
+	// 	| ((values & mapDpadUp->pinMask)    ? mapDpadUp->buttonMask    : 0)
+	// 	| ((values & mapDpadDown->pinMask)  ? mapDpadDown->buttonMask  : 0)
+	// 	| ((values & mapDpadLeft->pinMask)  ? mapDpadLeft->buttonMask  : 0)
+	// 	| ((values & mapDpadRight->pinMask) ? mapDpadRight->buttonMask : 0)
+	// ;
 
 	state.buttons = 0
-		| ((values & mapButtonB1->pinMask)  ? mapButtonB1->buttonMask  : 0)
-		| ((values & mapButtonB2->pinMask)  ? mapButtonB2->buttonMask  : 0)
-		| ((values & mapButtonB3->pinMask)  ? mapButtonB3->buttonMask  : 0)
+		| ((values & mapButtonB1->pinMask) || (values & mapDpadLeft->pinMask)  ? mapButtonB1->buttonMask  : 0)
+		| ((values & mapButtonB2->pinMask) || (values & mapDpadDown->pinMask)  ? mapButtonB2->buttonMask  : 0)
+		| ((values & mapButtonB3->pinMask) || (values & mapDpadLeft->pinMask)  ? mapButtonB3->buttonMask  : 0)
 		| ((values & mapButtonB4->pinMask)  ? mapButtonB4->buttonMask  : 0)
 		| ((values & mapButtonL1->pinMask)  ? mapButtonL1->buttonMask  : 0)
-		| ((values & mapButtonR1->pinMask)  ? mapButtonR1->buttonMask  : 0)
+		| ((values & mapButtonR1->pinMask) || (values & mapDpadRight->pinMask) || (values & mapDpadDown->pinMask)  ? mapButtonR1->buttonMask  : 0)
 		| ((values & mapButtonL2->pinMask)  ? mapButtonL2->buttonMask  : 0)
-		| ((values & mapButtonR2->pinMask)  ? mapButtonR2->buttonMask  : 0)
+		| ((values & mapButtonR2->pinMask) || (values & mapDpadRight->pinMask)  ? mapButtonR2->buttonMask  : 0)
 		| ((values & mapButtonS1->pinMask)  ? mapButtonS1->buttonMask  : 0)
 		| ((values & mapButtonS2->pinMask)  ? mapButtonS2->buttonMask  : 0)
 		| ((values & mapButtonL3->pinMask)  ? mapButtonL3->buttonMask  : 0)
@@ -145,8 +145,8 @@ void Gamepad::read()
 	// ugly SOCD left analog stick cleaner
 	// dpad should have priority here so.. if we get a right input on dpad (buttons) we have to cancel the left input
 	// the same for dpad up => left analog stick down must not register
-	state.lx = (values & mapLeftStickRight->pinMask) && !(values & mapDpadLeft->pinMask)  ? GAMEPAD_JOYSTICK_MAX : (values & mapLeftStickLeft->pinMask) && !(values & mapDpadRight->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
-	state.ly = (values & mapLeftStickDown->pinMask) && !(values & mapDpadUp->pinMask) ? GAMEPAD_JOYSTICK_MAX : (values & mapLeftStickUp->pinMask) && !(values & mapDpadDown->pinMask) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
+	state.lx = ((values & mapLeftStickRight->pinMask) && !(values & mapDpadUp->pinMask)) || ((values & mapLeftStickLeft->pinMask) && (values & mapDpadUp->pinMask))  ? GAMEPAD_JOYSTICK_MAX : ((values & mapLeftStickRight->pinMask) && (values & mapDpadUp->pinMask)) || ((values & mapLeftStickLeft->pinMask) && !(values & mapDpadUp->pinMask)) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
+	state.ly = ((values & mapLeftStickDown->pinMask) && !(values & mapDpadUp->pinMask)) ||  ((values & mapLeftStickUp->pinMask) && (values & mapDpadUp->pinMask)) ? GAMEPAD_JOYSTICK_MAX : ((values & mapLeftStickDown->pinMask) && (values & mapDpadUp->pinMask)) || ((values & mapLeftStickUp->pinMask) && !(values & mapDpadUp->pinMask)) ? GAMEPAD_JOYSTICK_MIN : GAMEPAD_JOYSTICK_MID;
 	state.rx = GAMEPAD_JOYSTICK_MID;
 	state.ry = GAMEPAD_JOYSTICK_MID;
 	state.lt = GAMEPAD_JOYSTICK_MID;
